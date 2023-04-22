@@ -18,8 +18,9 @@ program
 program
   .command("address")
   .description("Generate a counterfactual address.")
-  .action(address);
-
+  .requiredOption("-o, --owner <address>", "The owner")
+  .requiredOption("-s, --salt <uint256>", "The salt")
+  .action(async (opts) => address(opts.owner, opts.salt));
 program
   .command("transfer")
   .description("Transfer ETH")
@@ -34,11 +35,22 @@ program
   .command("erc20Transfer")
   .description("Transfer ERC-20 token")
   .option("-pm, --withPaymaster", "Use a paymaster for this transaction")
+  .requiredOption("-s, --sender <address>", "The sender address")
+  .requiredOption("-o, --owner <address>", "The owner address")
+  .requiredOption("-st, --salt <uint256>", "The salt")
   .requiredOption("-tkn, --token <address>", "The token address")
   .requiredOption("-t, --to <address>", "The recipient address")
   .requiredOption("-amt, --amount <decimal>", "Amount of the token to transfer")
   .action(async (opts) =>
-    erc20Transfer(opts.token, opts.to, opts.amount, Boolean(opts.withPaymaster))
+    erc20Transfer(
+      opts.sender,
+      opts.owner,
+      opts.salt,
+      opts.token,
+      opts.to,
+      opts.amount,
+      Boolean(opts.withPaymaster)
+    )
   );
 
 program
